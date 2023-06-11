@@ -15,16 +15,25 @@ headers = {
 	'X-CSRFToken': csrf_token,
 }
 
-
-datas = {
-	'email': input('Введите почту от аккаунта: '),
-	'password': getpass.getpass('Введите пароль: ')
-}
-
+with open('user_data.json', 'r') as file:
+	data = json.loads(file.read())
+	email = data['email']
+	password = data['password']
+if email == '' or password == '':
+	print('Файл user_data.json не заполнен')
+	datas = {
+		'email': input('Введите почту от аккаунта: '),
+		'password': getpass.getpass('Введите пароль: ')
+	}
+else:
+	datas = {
+		'email': email,
+		'password': password
+	}
 login = s.post(url+'users/login',data=datas,headers=headers)
 
 if login.status_code == 204:
-	print('Всё верно!')
+	print('Вы успешно вошли в аккаунт!')
 else:
 	print('Неверный логин или пароль!')
 	sys.exit()
